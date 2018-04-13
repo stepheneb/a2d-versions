@@ -1,0 +1,72 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 100%;
+    line-height: 1.2em; /*color: #393939;*/
+    color: #444444;
+    background-color: #eee;
+}
+
+div.content {
+  margin: 1em 2em;
+}
+
+div.model-list {
+  margin: 1em 2em 1em 1em;
+}
+
+div.model-list a#commitrange {
+  margin-left: 2em;
+}
+
+iframe {
+  width: 1060px;
+  height:600px;
+  border: none;
+  overflow:hidden;
+}
+
+div.introduction {
+  box-sizing: border-box;
+  width: 1060px;
+  min-height: 3em;
+  max-height: 18em;
+  background-color: white;
+  overflow: auto;
+  text-align: left;
+  margin: 1em 0em;
+  padding: 0.75em 4em 0.75em 2em;
+}
+
+div.description {
+  box-sizing: border-box;
+  width: 1060px;
+  min-height: 10em;
+  max-height: 32em;
+  background-color: white;
+  overflow: auto;
+  text-align: left;
+  margin: 1em 0em;
+  padding: 1em 4em 3em 2em;
+}
+
+div.introduction p {
+  margin-bottom: 0.5em;
+}
+
+div.description p {
+  margin-bottom: 0.5em;
+}
+
+div.description blockquote {
+  margin: 0em 6em 0.5em 1em;
+  font-style: italic;
+}

@@ -16,7 +16,7 @@ body {
 #container {
     margin: 0 auto;
     border: 0;
-    padding: 0px 10px;
+    padding: 0px 0px;
 }
 
 #container blockquote {
@@ -104,11 +104,14 @@ pre {
 
 /* http://stackoverflow.com/questions/7615009/disable-interpolation-when-scaling-a-canvas */
 canvas {
-  image-rendering: optimizeSpeed !important;
-  image-rendering: -moz-crisp-edges !important;
-  image-rendering: -webkit-optimize-contrast !important;
   image-rendering: optimize-contrast !important;
   -ms-interpolation-mode: nearest-neighbor !important;
+  image-rendering: crisp-edges !important;
+
+  image-rendering: -moz-crisp-edges !important;
+
+  image-rendering: optimizeSpeed !important;
+  image-rendering: pixelated;
 }
 
 #chart {

@@ -4,11 +4,14 @@
   <title>Avalanche2D</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" media="all" href="styles.css">
-  <script src="models.js" type="text/javascript" ></script>
+  <link rel="stylesheet" media="all" href="styles/styles.css">
+  <script src="lib/showdown.js" type="text/javascript" ></script>
+  <script src="src/content.js" type="text/javascript" ></script>
+  <script src="src/models.js" type="text/javascript" ></script>
 </head>
 <body>
   <div class="content">
+    <div id="introduction" class="introduction"></div>
     <div class="model-list">
       <span>Select model: </span>
       <select id="select-model">
@@ -21,11 +24,12 @@
         <option value="7-only-render-canvas-once-per-animRequest-0ced7a3">7-only-render-canvas-once-per-animRequest-0ced7a3</option>
         <option value="8-run-model-loop-optimization-259badb">8-run-model-loop-optimization-259badb</option>
       </select>
+      <a id="commitrange" target="_blank">code: 2e83898…ee82f32</a>
     </div>
-
-    <iframe id="model-iframe" src="1-graphing-works-ee82f32/avalanche2d.html" scrolling="no" title="iframe example 1" width="1000" height="600">
+    <iframe id="model-iframe" src="1-graphing-works-ee82f32/avalanche2d.html" scrolling="no">
       <p>Your browser does not support iframes.</p>
     </iframe>
+    <div id="description" class="description"></div>
   </div>
 </body>
 </html>
