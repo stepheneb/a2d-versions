@@ -56,5 +56,8 @@ window.onload=function() {
 
   commitrange.href = comparetarget + content[selectModel.value].commitrange;
   commitrange.text = "code: " + content[selectModel.value].commitrange;
+  // look for code blocks and add syntax highlighting
+  Prism.highlightAll()
+
 
 }
