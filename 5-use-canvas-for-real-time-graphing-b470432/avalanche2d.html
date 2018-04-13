@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Avalanche-JS Demo</title>
+    <link href="stylesheets/style.css" rel="stylesheet" type="text/css"/>
+    <script src="lib/sprintf.js" type="text/javascript" ></script>
+    <script src="lib/pathseg.js" type="text/javascript" ></script>
+    <script src="src/grapher.js" type="text/javascript" ></script>
+    <script src="lib/d3/d3.js" type="text/javascript" ></script>
+    <style type="text/css">
+      #patchesCanvas { 
+        width:400px;
+        height:400px;
+        padding:0px;
+        background-color:lightgray;
+        color:gray;
+        border: solid 1px #cccccc
+      }
+
+    </style>
+
+    <script type="text/javascript">
+      // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+      window.requestAnimFrame = (function() {
+        return window.requestAnimationFrame ||
+               window.webkitRequestAnimationFrame ||
+               window.mozRequestAnimationFrame ||
+               window.oRequestAnimationFrame ||
+               window.msRequestAnimationFrame ||
+               function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+                 return window.setTimeout(callback, 1000/60);
+               };
+      })();
+      window.cancelRequestAnimFrame = (function() {
+        return window.cancelCancelRequestAnimationFrame ||
+               window.webkitCancelRequestAnimationFrame ||
+               window.mozCancelRequestAnimationFrame ||
+               window.oCancelRequestAnimationFrame ||
+               window.msCancelRequestAnimationFrame ||
+               window.clearTimeout;
+      })();
+      
+      // a simple JavaScript source code loader
+      function myRequire(src, callback){
+        if (src.constructor == Array) {
+          var libraries = src;
+        } else {
+          var libraries = [src];
+        }
+        var script = document.createElement("script") 
+        script.type = "text/javascript";
+        // IE
+        var ie = false;
+        script.onreadystatechange = function () {
+          ie = true;
+          if (script.readyState === 'loaded' || script.readyState == 'complete') {
+            script.onreadystatechange = null;
+            libraries.shift();
+            if (libraries.length > 0) {
+              myRequire(libraries)
+            }
+            if (callback) {
+              callback();            
+            }
+          }
+        }
+        // Not IE
+        script.onload = function () {
+          if (!ie) {
+            libraries.shift();
+            if (libraries.length > 0) {
+              myRequire(libraries)
+            }
+            if (callback) {
+              callback();            
+            }
+          }
+        }
+        script.src = libraries[0];
+        document.getElementsByTagName("head")[0].appendChild(script);
+      };
+    </script>
+</head>
+<div id="container">
+  <div id="content">
+    <div id="webglCanvasContainer">
+      <ul id="visualizations" class="hlist">
+        <li>
+          <p>Avalanche-JS Model: Rendered using an HTML5 canvas</p>
+          <canvas id="patchesCanvas"></canvas>
+        </li>
+        <li>
+          <p>Average Number of folders on a desk</p>
+          <div id='chart'></div>
+        </li>
+      </ul>
+      <ul class="hlist">
+        <li>
+          <form id="step-model">
+            <fieldset>
+              <legend>Step</legend>
+              <label><input type="radio" name="step" value="stop" checked> Stop</input></label>
+              <label><input type="radio" name="step" value="step"> Step</input></label>
+              <label><input type="radio" name="step" value="go"> Go</input></label>
+              <label><input type="radio" name="step" value="reset"> Reset</input></label>
+            </fieldset>
+          </form>
+        </li>
+        <li>
+          <fieldset>
+            <legend>JavaScript Array Type</legend>
+            <select id="select-array-type">
+              <option value="regular">Regular</option>
+              <option value="" disabled="disabled">Typed Arrays ...</option>
+              <option value="Uint8Array">Uint8Array</option>
+              <option value="Uint16Array">Uint16Array</option>
+              <option value="Uint32Array">Uint32Array</option>
+              <option value="Int8Array">Int8Array</option>
+              <option value="Int16Array">Int16Array</option>
+              <option value="Int32Array">Int32Array</option>
+              <option value="Float32Array">Float32Array</option>
+              <option value="Float64Array">Float64Array</option>
+            </select>
+          </fieldset>
+        </li>
+        <li>
+          <form id="show-me">
+            <fieldset>
+              <legend>Rendering</legend>
+              <label><input id="show-visualization" type="checkbox" checked/> Visualization</label>
+              <label><input id="show-graph" type="checkbox" checked/> Graph</label>
+            </fieldset>
+          </form>
+        </li>
+        <li id="step-model-warning"></li>
+      </ul>
+    </div>
+    <pre id="step-count"></pre>
+  </div>
+</div>
+<script type="text/javascript">
+
+  window.onload=function() {
+    myRequire([ 'src/avalanche2d.js' ],
+    
+    function() {
+
+      var webgl = !!window.WebGLRenderingContext;
+
+      var select_array_type = document.getElementById("select-array-type");
+      var select_array_type_choices = select_array_type.getElementsByTagName("option")
+
+      var safari_browser = false;
+      var chrome_browser = navigator.userAgent.toLowerCase().indexOf('chrome') > 0;
+      if (!chrome_browser) {
+        safari_browser = navigator.userAgent.toLowerCase().indexOf('safari') > 0;
+      };
+
+      if (webgl) {
+        select_array_type.value = safari_browser ? "regular" : "Uint8Array";
+      } else {
+        for(var i=2; i < select_array_type_choices.length; i++) {
+          select_array_type_choices[i].disabled = true;
+        }
+      };
+
+      // avalanche2d.setupColorDivs();
+      avalanche2d.setupRGBAColorTables();
+      
+      var model, array_selection;
+      
+      var model_options = { model: { nx: 100, ny: 100, initial_value: 2 }};
+
+      function selectArrayTypeChange() {
+        array_selection = select_array_type.value;
+        model = new avalanche2d.Model(model_options, array_selection);
+      };
+      
+      select_array_type.onchange = selectArrayTypeChange;
+      select_array_type.onchange();
+
+      var visualizations = document.getElementById("visualizations");
+      var folder_data = document.getElementById("folder-data");
+
+      var step_model = document.getElementById("step-model");
+      var step_model_inputs = step_model.getElementsByTagName("input")
+      
+      var show_visualization = document.getElementById("show-visualization");
+      var show_graph = document.getElementById("show-graph");
+
+      var step_model_warning = document.getElementById("step-model-warning");
+      var step_count = document.getElementById("step-count");
+
+      var canvas = document.getElementById("patchesCanvas");
+      var run_mode;
+
+      var start_time  = +new Date();
+      var sample_time = +new Date();
+      var last_sample_time = sample_time;
+      var sample_duration;
+      var step_start, step_duration;
+      var average_sample_rate;
+      var foldersRunningAverage;
+      
+      var graph_data = [2];
+      var graph = grapher.graph(graph_data);
+
+      function displayStats() {
+        average_sample_rate = model.indexOfStep / (sample_time - start_time) * 1000
+        step_count.textContent = 'avalanches: ' + model.indexOfStep + 
+          sprintf(", rate: %5.1f (steps/s)", average_sample_rate) +
+          sprintf(", last sample time: %3f (ms)", sample_duration) +
+          sprintf(", loop compute maximum: %2f", model_loop_time) +
+          sprintf(", folders: %2.3f (ave)", model.averageFolders);
+      };
+      
+      var modelRunRequest;
+
+      var display_method;
+      
+      function modelController() {
+        for(var i = 0; i < this.elements.length; i++)
+            if (this.elements[i].checked) run_mode = this.elements[i].value;
+        switch(run_mode) {
+          case "stop":
+            modelStop();
+            break;
+          case "step":
+            modelStep();
+            break;
+          case "go":
+            modelGo();
+            break;
+          case "reset":
+            modelReset();
+            break;
+        }
+      };
+      
+      function modelStop() {
+        run_mode = "stop";
+        running = false;
+        if (modelRunRequest) cancelRequestAnimFrame(modelRunRequest);
+        if (!show_visualization.checked) {
+          displayStats();
+          avalanche2d.displayFolderCanvas(canvas, model);
+        };
+        graph.hide_canvas();
+        graph.new_data(graph_data);
+        step_model_inputs[0].checked = true;
+      };
+      
+      function modelStep() {
+        if (modelRunRequest) cancelRequestAnimFrame(modelRunRequest);
+        running = false;
+        runModelStep();
+        if (!show_visualization.checked) {
+          displayStats();
+          avalanche2d.displayFolderCanvas(canvas, model);
+        };
+        graph.hide_canvas();
+        graph.new_data(graph_data);
+        if (model.indexOfStep >= 5000) displayResetWarning();
+        step_model_inputs[0].checked = true;
+      };
+
+      function modelGo() {
+        running = true;
+        if (model.indexOfStep >= 5000) {
+          displayResetWarning();
+          step_model_inputs[0].checked = true;
+        } else {
+          start_time = +new Date();
+          if (show_graph.checked) {
+            graph.show_canvas();
+          };
+          modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
+        }
+      };
+      
+      function modelReset() {
+        if (modelRunRequest) cancelRequestAnimFrame(modelRunRequest);
+        model.reset();
+        avalanche2d.displayFolderCanvas(canvas, model);
+        folder_data.innerHTML = '';
+        step_count.innerHTML = '';
+        step_model_warning.innerHTML = null;
+        graph.hide_canvas();
+        graph.clear_canvas();
+        graph_data = [2];
+        graph.new_data(graph_data);
+        step_model_inputs[0].checked = true;
+      }
+
+      function displayResetWarning() {
+        step_model_warning.innerHTML = "<fieldset><legend>Note</legend>Reset the model to start again.</fieldset>"
+      };
+
+      step_model.onchange = modelController;
+      avalanche2d.displayFolderCanvas(canvas, model);
+
+      function displayGraph() {
+        if (show_graph.checked) {
+          graph.new_data(graph_data);
+        } else {
+          
+        };
+      }
+      
+      show_graph.onchange = displayGraph;
+
+      function runModelStep() {
+          last_sample_time = +new Date(sample_time);
+          model.nextStep();
+          graph_data.push(model.averageFolders);
+          if (show_visualization.checked) avalanche2d.displayFolderCanvas(canvas, model);
+          // if (show_graph.checked) graph.add_point(model.averageFolders);
+          if (show_graph.checked) graph.add_canvas_point(model.averageFolders);
+          sample_time = +new Date();
+          sample_duration = sample_time - last_sample_time;
+          if (show_visualization.checked) displayStats();
+      };
+
+      var model_loop_time = 15;
+
+      function runModelLoop(){
+        if (model.indexOfStep < 5000 && running) {
+          loop_start = +new Date();
+          modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
+          runModelStep();
+          loop_time = +new Date()
+          loop_elapsed = loop_time - loop_start;
+          while (loop_elapsed < model_loop_time) {
+            runModelStep();
+            loop_time = +new Date()
+            loop_elapsed = loop_time - loop_start;
+          }
+        } else {
+          modelStop()
+        }
+      };
+    });
+  };
+</script>
+</body>
+</html>
