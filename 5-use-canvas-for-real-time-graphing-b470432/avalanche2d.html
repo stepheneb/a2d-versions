@@ -181,7 +181,6 @@
       select_array_type.onchange();
 
       var visualizations = document.getElementById("visualizations");
-      var folder_data = document.getElementById("folder-data");
 
       var step_model = document.getElementById("step-model");
       var step_model_inputs = step_model.getElementsByTagName("input")
@@ -283,7 +282,6 @@
         if (modelRunRequest) cancelRequestAnimFrame(modelRunRequest);
         model.reset();
         avalanche2d.displayFolderCanvas(canvas, model);
-        folder_data.innerHTML = '';
         step_count.innerHTML = '';
         step_model_warning.innerHTML = null;
         graph.hide_canvas();
@@ -340,6 +338,7 @@
           modelStop()
         }
       };
+      graph.clear_canvas();
     });
   };
 </script>

@@ -164,6 +164,7 @@
     };
 
     function clear_canvas() {
+      gcanvas.width = gcanvas.width;
       gctx.fillStyle = "rgba(0,255,0, 0.05)";
       gctx.fillRect(0, 0, gcanvas.width, gcanvas.height);
     };

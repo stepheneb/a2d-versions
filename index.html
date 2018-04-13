@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Avalanche2D</title>
+  <title>JavaScript computational model and visualization: 50x performance improvement.</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="lib/bootstrap-4.1.0-dist/css/bootstrap.css"/>
   <link rel="stylesheet" media="all" href="styles/styles.css">
   <link rel="stylesheet" href="styles/prism.css"/>
+  <script src="lib/jquery/jquery-3.3.1.min.js" type="text/javascript" ></script>
+  <script src="lib/bootstrap-4.1.0-dist/js/bootstrap.js" type="text/javascript" ></script>
   <script src="lib/showdown.js" type="text/javascript" ></script>
   <script src="src/content.js" type="text/javascript" ></script>
   <script src="src/models.js" type="text/javascript" ></script>
 </head>
 <body>
   <div class="content">
+    <div class="header container">
+      <h3 class="d-sm-inline-flex flex-grow-1">JavaScript computational model and visualization: 50x performance improvement.</h3>
+      <a class="github btn btn-sm btn-success"  target="_blank" href="https://github.com/stepheneb/a2d-versions">github</a>
+    </div>
     <div id="introduction" class="introduction"></div>
     <div class="model-list">
       <span>Select model: </span>
@@ -25,12 +32,14 @@
         <option value="7-only-render-canvas-once-per-animRequest-0ced7a3">7-only-render-canvas-once-per-animRequest-0ced7a3</option>
         <option value="8-run-model-loop-optimization-259badb">8-run-model-loop-optimization-259badb</option>
       </select>
-      <a id="commitrange" target="_blank">code: 2e83898…ee82f32</a>
+      <a id="taggedcode" target="_blank"></a>
+      <a id="comparerange" target="_blank"></a>
     </div>
     <iframe id="model-iframe" src="1-graphing-works-ee82f32/avalanche2d.html" scrolling="no">
       <p>Your browser does not support iframes.</p>
     </iframe>
     <div id="description" class="description"></div>
   </div>
+  <script src="lib/prism.js"></script>
 </body>
 </html>

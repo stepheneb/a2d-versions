@@ -9,7 +9,7 @@
     <script src="lib/pathseg.js" type="text/javascript" ></script>
     <script src="lib/d3/d3.js" type="text/javascript" ></script>
     <style type="text/css">
-      #patchesCanvas { 
+      #patchesCanvas {
         width:400px;
         height:400px;
         padding:0px;
@@ -28,7 +28,7 @@
         } else {
           var libraries = [src];
         }
-        var script = document.createElement("script") 
+        var script = document.createElement("script")
         script.type = "text/javascript";
         // IE
         script.onreadystatechange = function () {
@@ -39,7 +39,7 @@
               myRequire(libraries)
             }
             if (callback) {
-              callback();            
+              callback();
             }
           }
         }
@@ -50,7 +50,7 @@
             myRequire(libraries)
           }
           if (callback) {
-            callback();            
+            callback();
           }
         }
         script.src = libraries[0];
@@ -111,7 +111,7 @@
 
   window.onload=function() {
     myRequire([ 'src/avalanche2d.js' ],
-    
+
     function() {
 
       var webgl = !!window.WebGLRenderingContext;
@@ -123,14 +123,13 @@
       } else {
         choose_array_type.elements[1].disabled = true;
         choose_array_type.elements[0].checked = true;
-        
       };
 
       // avalanche2d.setupColorDivs();
       avalanche2d.setupRGBAColorTables();
-      
+
       var model, array_selection;
-      
+
       var model_options = { model: { nx: 100, ny: 100, initial_value: 2 }};
 
       function arrayTypeChange() {
@@ -141,12 +140,12 @@
         }
         model = new avalanche2d.Model(model_options, array_selection);
       };
-      
+
       choose_array_type.onchange = arrayTypeChange;
       choose_array_type.onchange();
 
       var step_model = document.getElementById("step-model");
-      
+
       var show_visualization = document.getElementById("show-visualization");
       var show_graph = document.getElementById("show-graph");
 
@@ -160,11 +159,15 @@
       var sample_time = new Date();
       var average_sample_time_ms = sample_time - last_sample_time;
       var foldersRunningAverage;
-      
+
       var graph_data = [2];
       var graph = grapher.graph(graph_data);
 
       window.renderModelStep = function() {
+        if (model.indexOfStep >= 5000) {
+          displayResetWarning();
+          step_model.elements[1].checked = true;
+        } else {
           sample_time = new Date();
           model.nextStep();
           graph_data.push(model.averageFolders);
@@ -177,6 +180,7 @@
             displayStats();
           }
           if (show_graph.checked) graph.add_point(model.averageFolders);
+        }
       };
 
       function displayStats() {
@@ -184,11 +188,11 @@
           sprintf(", rate: %3.1f (avalanches/s)", 1/average_sample_time_ms * 1000) +
           sprintf(", folders: %1.2f (ave)", model.averageFolders);
       };
-      
+
       window.paintInterval;
 
       var display_method;
-      
+
       function runModelStep() {
         for(var i = 0; i < this.elements.length; i++)
             if (this.elements[i].checked) run_mode = this.elements[i].value;
@@ -221,7 +225,7 @@
             break;
         }
       }
-      
+
       step_model.onchange = runModelStep;
       avalanche2d.displayFolderCanvas(canvas, model);
 
@@ -229,13 +233,12 @@
         if (show_graph.checked) {
           graph.new_data(graph_data);
         } else {
-          
+
         };
       }
-      
+
       show_graph.onchange = displayGraph;
 
-      
     });
   };
 </script>

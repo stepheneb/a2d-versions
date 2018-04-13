@@ -5,8 +5,10 @@ window.onload=function() {
       modelFrame    = document.getElementById("model-iframe"),
       introduction  = document.getElementById("introduction"),
       description   = document.getElementById("description"),
-      commitrange   = document.getElementById("commitrange"),
-      comparetarget = "https://github.com/stepheneb/avalanche2d-js/compare/";
+      comparerange   = document.getElementById("comparerange"),
+      comparetarget = "https://github.com/stepheneb/avalanche2d-js/compare/",
+      taggedcode    = document.getElementById("taggedcode"),
+      taggedtarget     = "https://github.com/stepheneb/avalanche2d-js/tree/";
 
   showdown.setFlavor('github');
 
@@ -54,10 +56,13 @@ window.onload=function() {
   introduction.innerHTML = converter.makeHtml(content[selectModel.value].introduction);
   description.innerHTML = converter.makeHtml(content[selectModel.value].description);
 
-  commitrange.href = comparetarget + content[selectModel.value].commitrange;
-  commitrange.text = "code: " + content[selectModel.value].commitrange;
   // look for code blocks and add syntax highlighting
   Prism.highlightAll()
 
+  taggedcode.href = taggedtarget + content[selectModel.value].tag;
+  taggedcode.text = "tag: " + content[selectModel.value].tag;
+
+  comparerange.href = comparetarget + content[selectModel.value].comparerange;
+  comparerange.text = "compare: " + content[selectModel.value].comparerange;
 
 }
