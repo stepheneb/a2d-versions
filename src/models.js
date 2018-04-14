@@ -4,11 +4,12 @@ window.onload=function() {
   var selectModel   = document.getElementById("select-model"),
       modelFrame    = document.getElementById("model-iframe"),
       introduction  = document.getElementById("introduction"),
+      modelsHeader  = document.getElementById("models-header"),
       description   = document.getElementById("description"),
-      comparerange   = document.getElementById("comparerange"),
+      comparerange  = document.getElementById("comparerange"),
       comparetarget = "https://github.com/stepheneb/avalanche2d-js/compare/",
       taggedcode    = document.getElementById("taggedcode"),
-      taggedtarget     = "https://github.com/stepheneb/avalanche2d-js/tree/";
+      taggedtarget  = "https://github.com/stepheneb/avalanche2d-js/tree/";
 
   showdown.setFlavor('github');
 
@@ -50,6 +51,7 @@ window.onload=function() {
     modelFrame.style.height = height;
 
     introduction.style.width = width;
+    modelsHeader.style.width = width;
     description.style.width = width;
   };
 
