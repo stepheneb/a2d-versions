@@ -203,6 +203,10 @@
 
       var display_method;
 
+      function displayResetWarning() {
+        step_model_warning.innerHTML = "<fieldset><legend>Note</legend>Reset the model to start again.</fieldset>"
+      };
+
       function runModelStep() {
         for(var i = 0; i < this.elements.length; i++)
             if (this.elements[i].checked) run_mode = this.elements[i].value;
