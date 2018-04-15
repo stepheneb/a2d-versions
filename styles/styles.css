@@ -20,10 +20,6 @@ div.content {
 }
 
 div.header {
-  display: flex;
-}
-
-div#models-header {
   width: 1060px;
   margin: 0em 0em;
   padding: 0em 1em;
