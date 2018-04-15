@@ -106,8 +106,9 @@ span.hlist-title {
 }
 
 span.hlist-desc {
-  margin-right: 0.2em;
+  margin: 0em 0.3em 0em 0.4em;
   font-weight: 600;
+  font-style: oblique;
 }
 
 div.code-links a {
