@@ -1,7 +1,8 @@
 
 var content = {
-"1-graphing-works-ee82f32": {
+"1": {
 tag: 'graphing-works',
+date: '2011 10 13',
 introduction: `
 Modeling [Self-Organised Criticality](http://en.wikipedia.org/wiki/Self-organized_criticality)
 
@@ -10,15 +11,25 @@ starts each desk already has two folders of work the bureaucrat is ignoring -- t
 in yellow. When the model is running more folders of work randomly appear on desks. When a desk
 accumulates four folders the bureaucrat distributes all four folders to the nearby desks, or if
 they are at the edge the folders are just thrown away. A blue cell is zero, green one, and red
-three folders
+three folders.
 
-The model will stop automatically when it reaches 5000 steps.
+I started this project on Oct 12, 2011. The model below is from a day later on Oct 13.
+This is when I got the real-time grapher I had written previous in a previous project
+connected to the model. Over the next month and 149 more commits I increased the
+combined performance of the model, visualization, and graph by a factor of aproximately 50.
+You can run the model at eight different points through this process.
+
+See the lower section for my commentary about the code and the changes.
+
+Click the Go button to start the model running. The model will stop automatically when
+it reaches 5000 steps. Note the rate of avalanches/s displayed under the model. Then try
+the next version.
 
 `,
 comparerange: '2e83898...ee82f32',
 description: `
 
-  [Self-Organised Criticality](http://en.wikipedia.org/wiki/Self-organized_criticality)
+### [Self-Organised Criticality](http://en.wikipedia.org/wiki/Self-organized_criticality)
 
   > The mathematics of avalanche size and frequency follows a power law that can be simulated to
   > a first approximation by any system that exhibits self-organized criticality (SOC). In "How
@@ -156,10 +167,15 @@ avalanche2d.displayFolderCanvas = function(canvas, model) {
 // -------*-------*-------*-------*-------*-------*-------*-------
 
 
-"2-dynamically-add-line-segments-d467b87": {
+"2": {
 tag: 'dynamically-add-line-segments',
+date: '2011 10 13',
 introduction: `
 Modeling [Self-Organised Criticality](http://en.wikipedia.org/wiki/Self-organized_criticality)
+
+I knew the code in the real-time grapher generating SVG segments which I had built
+using the [D3.js](https://d3js.org/) framework could be a performance bottleneck
+so I tried to optimize the code adding line segments to the SVG pathSegList object.
 
 This version of the code is just a bit faster that the previous version.
 
@@ -170,7 +186,7 @@ description: `
 ### Code Comments
 
 An experiment to see if adding SVG line segments would be faster if I add them to the SVG pathSegList
-directly instead of using D3.js. It's only a bit faster.
+directly instead of using [D3.js](https://d3js.org/). It's only a bit faster.
 
 [grapher.generate_path_attribute and grapher.add_point](https://github.com/stepheneb/avalanche2d-js/blob/d467b876455e9c4d3285ce6f2a1bbfe4c948ad0c/src/grapher.js#L91)
 
@@ -230,8 +246,9 @@ function add_point(p) {
 // -------*-------*-------*-------*-------*-------*-------*-------
 
 
-"3-multiple-model-steps-until-15ms-bcd5469": {
+"3": {
 tag:'multiple-model-steps-until-15ms',
+date: '2011 10 17',
 introduction: `
 
 This version runs the compute and render steps of the model multiple times until 15ms has passed.
@@ -283,8 +300,9 @@ window.runModelStep = function() {
 // -------*-------*-------*-------*-------*-------*-------*-------
 
 
-"4-requestAnimFrame-faster-than-setInterval-20a640b": {
+"4": {
 tag: 'requestAnimFrame-faster-than-setInterval',
+date: '2011 10 19',
 introduction: `
 
 Am now using [window.requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)
@@ -312,8 +330,9 @@ Chrome are about the same speed.
 // -------*-------*-------*-------*-------*-------*-------*-------
 
 
-"5-use-canvas-for-real-time-graphing-b470432": {
+"5": {
 tag: 'use-canvas-for-real-time-graphing',
+date: '2011 10 19',
 introduction: `
 
 Rendering into a [Canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element
@@ -338,6 +357,7 @@ description: `
 
 "6-dynamically-adjust-model-loop-time-c835db1": {
 tag: 'dynamically-adjust-model-loop-time',
+date: '2011 10 20',
 introduction: `
 
 
@@ -356,8 +376,9 @@ description: `
 // -------*-------*-------*-------*-------*-------*-------*-------
 
 
-"7-only-render-canvas-once-per-animRequest-0ced7a3": {
+"7": {
 tag: 'only-render-canvas-once-per-animRequest',
+date: '2011 10 21',
 introduction: `
 
 
@@ -377,10 +398,21 @@ description: `
 // -------*-------*-------*-------*-------*-------*-------*-------
 
 
-"8-run-model-loop-optimization-259badb": {
+"8": {
 tag: 'run-model-loop-optimization',
+date: '2012 10 21',
 introduction: `
 
+This is how fast the code ended up in this performance investigation. If you are
+paying attention to the dates you might notice this commit is a year after I
+started the project -- but the last real commit that affected performance was made
+on 2011 10 28, 16 days after I started.
+
+Most of the performance improvements are related to a implification of the run-model
+loop and faster ways to interact with and clear the canvas objects.
+
+This version is so much faster than when I started I decided to add the ability
+to increase the desk array size up to 400x400 to slow it down again.
 
 `,
 comparerange: '0ced7a3...259badb',
