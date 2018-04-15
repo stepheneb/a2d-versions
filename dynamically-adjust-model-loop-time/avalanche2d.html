@@ -278,12 +278,6 @@
         if (autoreset && model.indexOfStep >= 5000) {
           modelReset();
           step_model_inputs[2].checked = true;
-        } else {
-          if (model.indexOfStep >= 5000) {
-            step_model_inputs[0].checked = true;
-            displayResetWarning();
-            return;
-          }
         }
         start_time = +new Date();
         if (show_graph.checked) {
