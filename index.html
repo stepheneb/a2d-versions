@@ -5,13 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="lib/bootstrap-4.1.0-dist/css/bootstrap.css"/>
-  <link rel="stylesheet" media="all" href="styles/styles.css">
   <link rel="stylesheet" href="styles/prism.css"/>
   <script src="lib/jquery/jquery-3.3.1.min.js" type="text/javascript" ></script>
   <script src="lib/bootstrap-4.1.0-dist/js/bootstrap.js" type="text/javascript" ></script>
   <script src="lib/showdown.js" type="text/javascript" ></script>
   <script src="src/content.js" type="text/javascript" ></script>
   <script src="src/models.js" type="text/javascript" ></script>
+  <link rel="stylesheet" media="all" href="styles/styles.css">
 </head>
 <body>
   <div class="content">
@@ -22,24 +22,24 @@
     <div id="introduction" class="introduction"></div>
     <div id="models-header">
       <span>Select model: </span>
-      <span class="left-arrowhead">&#x27A4</span>
+      <span id="previous-model" class="left-arrowhead">&#x27A4</span>
       <select id="select-model">
-        <option value="1-graphing-works-ee82f32" selected>1-graphing-works</option>
-        <option value="2-dynamically-add-line-segments-d467b87">2-dynamically-add-line-segments</option>
-        <option value="3-multiple-model-steps-until-15ms-bcd5469">3-multiple-model-steps-until-15ms</option>
-        <option value="4-requestAnimFrame-faster-than-setInterval-20a640b">4-requestAnimFrame-faster-than-setInterval</option>
-        <option value="5-use-canvas-for-real-time-graphing-b470432">5-use-canvas-for-real-time-graphing</option>
-        <option value="6-dynamically-adjust-model-loop-time-c835db1">6-dynamically-adjust-model-loop-time</option>
-        <option value="7-only-render-canvas-once-per-animRequest-0ced7a3">7-only-render-canvas-once-per-animRequest</option>
-        <option value="8-run-model-loop-optimization-259badb">8-run-model-loop-optimization</option>
+        <option value="1" selected>graphing-works</option>
+        <option value="2">dynamically-add-line-segments</option>
+        <option value="3">multiple-model-steps-until-15ms</option>
+        <option value="4">requestAnimFrame-faster-than-setInterval</option>
+        <option value="5">use-canvas-for-real-time-graphing</option>
+        <option value="6">dynamically-adjust-model-loop-time</option>
+        <option value="7">only-render-canvas-once-per-animRequest</option>
+        <option value="8">run-model-loop-optimization</option>
       </select>
-      <span class="right-arrowhead">&#x27A4</span>
+      <span id="next-model" class="right-arrowhead">&#x27A4</span>
       <div class="code-links">
         <a id="taggedcode" target="_blank"></a>
         <a id="comparerange" target="_blank"></a>
       </div>
     </div>
-    <iframe id="model-iframe" src="1-graphing-works-ee82f32/avalanche2d.html" scrolling="no">
+    <iframe id="model-iframe" src="" scrolling="no">
       <p>Your browser does not support iframes.</p>
     </iframe>
     <div id="description" class="description"></div>
