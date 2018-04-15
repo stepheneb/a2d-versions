@@ -9,14 +9,6 @@
 <div id="container">
    <div id="content">
     <div id="webglCanvasContainer">
-      <ul id="visualizations" class="hlist">
-        <li>
-          <canvas id="patchesCanvas"></canvas>
-        </li>
-        <li>
-          <div id='chart'></div>
-        </li>
-      </ul>
       <ul class="hlist">
         <li>
           <form id="step-model">
@@ -80,9 +72,17 @@
         </li>
         <li id="step-model-warning"></li>
       </ul>
+      <div id="stats"></div>
+      <ul id="visualizations" class="hlist">
+        <li>
+          <canvas id="patchesCanvas"></canvas>
+        </li>
+        <li>
+          <div id='chart'></div>
+        </li>
+      </ul>
+      <div id="aloop-output"></div>
     </div>
-    <div id="stats"></div>
-    <div id="aloop-output"></div>
 </div>
 <script type="text/javascript">
   window.onload=function() {

@@ -58,12 +58,11 @@ body {
 #content ul.hlist li {
     margin-left: 5px;
     line-height: 1.4em;
-    color: #444444 !important;    
+    color: #444444 !important;
     display: inline-table;
     vertical-align: top;
     list-style-type: none;
 }
-
 
 #webglCanvasContainer  {
     margin-left: 5px;
@@ -90,16 +89,12 @@ pre {
   overflow: auto;
 }
 
-#stats {
-  margin: 5px 5px 5px 10px;
+#stats, #step-count, #aloop-output {
+  margin: 0px 1.5em;
   font-family: "New Courier", Courier, monospace;
   font-size: 85%;
-}
-
-#aloop-output {
-  margin: 5px 5px 5px 10px;
-  font-family: "New Courier", Courier, monospace;
-  font-size: 85%;
+  display: inline-block;
+  height: 1em;
 }
 
 /* http://stackoverflow.com/questions/7615009/disable-interpolation-when-scaling-a-canvas */
@@ -167,7 +162,7 @@ fieldset {
 fieldset  {
     line-height: 1.2em;
     margin-top: 5px;
-    padding: 0.5em 0.5em 1.0em 0.5em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
     font-size: 90%;
     display: inline-block;
     list-style-type: none;

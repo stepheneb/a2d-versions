@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <title>Avalanche-JS Demo</title>
@@ -7,7 +8,7 @@
     <script src="src/grapher.js" type="text/javascript" ></script>
     <script src="lib/d3/d3.js" type="text/javascript" ></script>
     <style type="text/css">
-      #patchesCanvas {
+      #patchesCanvas { 
         width:400px;
         height:400px;
         padding:0px;
@@ -38,7 +39,7 @@
                window.msCancelRequestAnimationFrame ||
                window.clearTimeout;
       })();
-
+      
       // a simple JavaScript source code loader
       function myRequire(src, callback){
         if (src.constructor == Array) {
@@ -59,7 +60,7 @@
               myRequire(libraries)
             }
             if (callback) {
-              callback();
+              callback();            
             }
           }
         }
@@ -83,16 +84,6 @@
 <div id="container">
   <div id="content">
     <div id="webglCanvasContainer">
-      <ul id="visualizations" class="hlist">
-        <li>
-          <p>Avalanche-JS Model: Rendered using an HTML5 canvas</p>
-          <canvas id="patchesCanvas"></canvas>
-        </li>
-        <li>
-          <p>Average Number of folders on a desk</p>
-          <div id='chart'></div>
-        </li>
-      </ul>
       <ul class="hlist">
         <li>
           <form id="step-model">
@@ -128,54 +119,69 @@
               <legend>Rendering</legend>
               <label><input id="show-visualization" type="checkbox" checked/> Visualization</label>
               <label><input id="show-graph" type="checkbox" checked/> Graph</label>
-             </fieldset>
+            </fieldset>
           </form>
         </li>
         <li id="step-model-warning"></li>
       </ul>
+      <div id="step-count"></div>
+      <ul id="visualizations" class="hlist">
+        <li>
+          <p>Avalanche-JS Model: Rendered using an HTML5 canvas</p>
+          <canvas id="patchesCanvas"></canvas>
+        </li>
+        <li>
+          <p>Average Number of folders on a desk</p>
+          <div id='chart'></div>
+        </li>
+      </ul>
     </div>
-    <div id="stats"></div>
-    <div id="aloop-output"></div>
   </div>
 </div>
 <script type="text/javascript">
 
-  window.onload=function() {
-    myRequire([ 'src/avalanche2d.js' ],
+  window.onload = function() {
+  myRequire(['src/avalanche2d.js'],
 
     function() {
 
       var webgl = !!window.WebGLRenderingContext;
 
       var select_array_type = document.getElementById("select-array-type");
-      var select_array_type_choices = select_array_type.getElementsByTagName("option")
+      var select_array_type_choices = select_array_type.getElementsByTagName("option");
 
       var safari_browser = false;
       var chrome_browser = navigator.userAgent.toLowerCase().indexOf('chrome') > 0;
       if (!chrome_browser) {
         safari_browser = navigator.userAgent.toLowerCase().indexOf('safari') > 0;
-      };
+      }
 
       if (webgl) {
         select_array_type.value = safari_browser ? "regular" : "Uint8Array";
       } else {
-        for(var i=2; i < select_array_type_choices.length; i++) {
+        for (var i = 2; i < select_array_type_choices.length; i++) {
           select_array_type_choices[i].disabled = true;
         }
-      };
+      }
 
       // avalanche2d.setupColorDivs();
       avalanche2d.setupRGBAColorTables();
 
       var model, array_selection;
 
-      var model_options = { model: { nx: 100, ny: 100, initial_value: 2 }};
+      var model_options = {
+        model: {
+          nx: 100,
+          ny: 100,
+          initial_value: 2
+        }
+      };
       var autoreset = false;
 
       function selectArrayTypeChange() {
         array_selection = select_array_type.value;
         model = new avalanche2d.Model(model_options, array_selection);
-      };
+      }
 
       select_array_type.onchange = selectArrayTypeChange;
       select_array_type.onchange();
@@ -183,25 +189,24 @@
       var visualizations = document.getElementById("visualizations");
 
       var step_model = document.getElementById("step-model");
-      var step_model_inputs = step_model.getElementsByTagName("input")
-
+      var step_model_inputs = step_model.getElementsByTagName("input");
 
       var show_visualization = document.getElementById("show-visualization");
       var show_graph = document.getElementById("show-graph");
 
       var step_model_warning = document.getElementById("step-model-warning");
-      var stats = document.getElementById("stats");
+      var step_count = document.getElementById("step-count");
 
       var canvas = document.getElementById("patchesCanvas");
       var run_mode;
 
-      var start_time  = +new Date();
-      var step_time = +new Date();
-      var last_step_time = step_time;
-      var step_duration = 0, step_duration_max = 0;
+      var start_time = +new Date();
+      var sample_time = +new Date();
+      var last_sample_time = sample_time;
+      var sample_duration;
       var step_start, step_duration;
-      var average_step_rate;
-
+      var average_sample_rate;
+      var foldersRunningAverage;
 
       var loop_start, loop_time, loop_elapsed, previous_loop_start, animmation_loop_timing;
 
@@ -209,23 +214,23 @@
       var graph = grapher.graph(graph_data);
 
       function displayStats() {
-        average_step_rate = model.indexOfStep / (step_time - start_time) * 1000
-        stats.textContent = 'avalanches: ' + model.indexOfStep + 
-          sprintf(", rate: %5.1f (steps/s)", average_step_rate) +
-          sprintf(", last sample time: %3f (ms)", step_duration) +
-          sprintf(", loop compute maximum: %3f", model_loop_time) +
-          sprintf(", anim loop timing: %3f", animmation_loop_timing) +
+        average_sample_rate = model.indexOfStep / (sample_time - start_time) * 1000;
+        step_count.textContent = 'avalanches: ' + model.indexOfStep +
+          sprintf(", rate: %5.1f (steps/s)", average_sample_rate) +
+          sprintf(", last sample time: %2f (ms)", sample_duration) +
+          sprintf(", loop compute maximum: %2f", model_loop_time) +
+          sprintf(", anim loop timing: %2f", animmation_loop_timing) +
           sprintf(", folders: %2.3f (ave)", model.averageFolders);
-      };
+      }
 
       var modelRunRequest;
 
       var display_method;
 
       function modelController() {
-        for(var i = 0; i < this.elements.length; i++)
-            if (this.elements[i].checked) run_mode = this.elements[i].value;
-        switch(run_mode) {
+        for (var i = 0; i < this.elements.length; i++)
+          if (this.elements[i].checked) run_mode = this.elements[i].value;
+        switch (run_mode) {
           case "stop":
             modelStop();
             break;
@@ -239,7 +244,7 @@
             modelReset();
             break;
         }
-      };
+      }
 
       function modelStop() {
         run_mode = "stop";
@@ -248,11 +253,11 @@
         if (!show_visualization.checked) {
           displayStats();
           avalanche2d.displayFolderCanvas(canvas, model);
-        };
+        }
         graph.hide_canvas();
         graph.new_data(graph_data);
         step_model_inputs[0].checked = true;
-      };
+      }
 
       function modelStep() {
         if (modelRunRequest) cancelRequestAnimFrame(modelRunRequest);
@@ -261,12 +266,12 @@
         if (!show_visualization.checked) {
           displayStats();
           avalanche2d.displayFolderCanvas(canvas, model);
-        };
+        }
         graph.hide_canvas();
         graph.new_data(graph_data);
         if (model.indexOfStep >= 5000) displayResetWarning();
         step_model_inputs[0].checked = true;
-      };
+      }
 
       function modelGo() {
         running = true;
@@ -277,18 +282,16 @@
         start_time = +new Date();
         if (show_graph.checked) {
           graph.show_canvas();
-        };
+        }
         previous_loop_start = +new Date();
-        initial_model_loop_time = model_loop_time;
-        model_loop_goal = model_loop_time * model_loop_bump_factor;
         modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
-      };
+      }
 
       function modelReset() {
         if (modelRunRequest) cancelRequestAnimFrame(modelRunRequest);
         model.reset();
         avalanche2d.displayFolderCanvas(canvas, model);
-         stats.innerHTML = '';
+        step_count.innerHTML = '';
         step_model_warning.innerHTML = null;
         graph.hide_canvas();
         graph.clear_canvas();
@@ -298,8 +301,8 @@
       }
 
       function displayResetWarning() {
-        step_model_warning.innerHTML = "<fieldset><legend>Note</legend>Reset the model to start again.</fieldset>"
-      };
+        step_model_warning.innerHTML = "<fieldset><legend>Note</legend>Reset the model to start again.</fieldset>";
+      }
 
       step_model.onchange = modelController;
       avalanche2d.displayFolderCanvas(canvas, model);
@@ -309,105 +312,55 @@
           graph.new_data(graph_data);
         } else {
 
-        };
+        }
       }
 
       show_graph.onchange = displayGraph;
 
       function runModelStep() {
-          last_step_time = +new Date(step_time);
-          model.nextStep();
-          graph_data.push(model.averageFolders);
-          if (show_visualization.checked) avalanche2d.displayFolderCanvas(canvas, model);
-          if (show_graph.checked) graph.add_canvas_point(model.averageFolders);
-          step_time = +new Date();
-          step_duration = step_time - last_step_time;
-          if (show_visualization.checked) displayStats();
-      };
+        last_sample_time = +new Date(sample_time);
+        model.nextStep();
+        graph_data.push(model.averageFolders);
+        if (show_visualization.checked) avalanche2d.displayFolderCanvas(canvas, model);
+        // if (show_graph.checked) graph.add_point(model.averageFolders);
+        if (show_graph.checked) graph.add_canvas_point(model.averageFolders);
+        sample_time = +new Date();
+        sample_duration = sample_time - last_sample_time;
+        if (show_visualization.checked) displayStats();
+      }
 
-      function runModelStepWithoutVisualization() {
-          last_step_time = +new Date(step_time);
-          model.nextStep();
-          graph_data.push(model.averageFolders);
-          if (show_graph.checked) graph.add_canvas_point(model.averageFolders);
-          step_time = +new Date();
-          step_duration = step_time - last_step_time;
-          if (show_visualization.checked) displayStats();
-      };
+      var model_loop_time = 13;
+      var model_loop_bump = model_loop_time / 5;
 
-      var initial_model_loop_time = 13;
-      var model_loop_bump_factor = 1.2;
-
-      var model_loop_time = initial_model_loop_time;
-      var model_loop_goal = model_loop_time * model_loop_bump_factor;
-
-      var multiple_steps;
-      var average_loop_time = 0, max_loop_time = 0;
-
-      function runModelLoop(){
+      function runModelLoop() {
         if (model.indexOfStep < 5000 && running) {
           loop_start = +new Date();
           animmation_loop_timing = loop_start - previous_loop_start;
-          multiple_steps = false;
           modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
-          step_duration_max = 0;
           runModelStep();
-          if (step_duration > step_duration_max) step_duration_max = step_duration;
           loop_time = +new Date();
           loop_elapsed = loop_time - loop_start;
           while (loop_elapsed < model_loop_time) {
-            multiple_steps = true;
-            runModelStepWithoutVisualization();
-            if (step_duration > step_duration_max) step_duration_max = step_duration;
-            loop_time = +new Date()
+            runModelStep();
+            loop_time = +new Date();
             loop_elapsed = loop_time - loop_start;
             if (model.indexOfStep >= 5000) {
               running = false;
               break;
-            };
-          };
-          if (animmation_loop_timing > model_loop_goal && loop_elapsed < model_loop_goal) {
+            }
+          }
+          if (animmation_loop_timing > (model_loop_time + model_loop_bump)) {
             model_loop_time++;
           } else {
-            if (model_loop_goal > aloop_minimum) model_loop_time--;
-          };
-          model_loop_goal = model_loop_time * model_loop_bump_factor;
+            model_loop_time--;
+          }
+          model_loop_bump = model_loop_time / 5;
           previous_loop_start = loop_start;
         } else {
           modelStop();
           autoreset = true;
         }
-      };
-
-      var aloop = 0;
-      var aloop_max_count = 20;
-      var aloop_timings = [];
-      var aloop_average = 0;
-      var aloop_minimum = 16;
-      var aloop_output = document.getElementById("aloop-output");
-
-      function measureAnimmationLoop() {
-        if (aloop <= aloop_max_count) {
-          loop_time = +new Date();
-          requestAnimFrame(measureAnimmationLoop, visualizations);
-          aloop_timings[aloop] = loop_time - loop_start;
-          aloop++;
-          loop_start = loop_time;
-        } else {
-          aloop_timings.shift();
-          aloop_minimum = Math.min.apply(null, aloop_timings)
-          var str = "Animation loop timing measurements for this browser: ";
-          aloop_output.innerHTML = str + aloop_timings.join(", ");
-        }
-      };
-
-      function startAnimmationLoopMeasurement() {
-        aloop = 0;
-        aloop_timings = [];
-        loop_start = +new Date();
-        requestAnimFrame(measureAnimmationLoop, visualizations);
-      };
-      startAnimmationLoopMeasurement();
+      }
     });
   };
 </script>

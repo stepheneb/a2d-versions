@@ -35,7 +35,7 @@ window.onload=function() {
       document.location.search = search;
     }
     // document.location.search = 'model=' + num;
-    modelFrame.src = content[num].tag + '/avalanche2d.html';
+    modelFrame.src = num + '-' + content[num].tag + '/avalanche2d.html';
   }
 
   function selectModelChange() {

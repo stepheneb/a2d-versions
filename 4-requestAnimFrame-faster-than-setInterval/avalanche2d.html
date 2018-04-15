@@ -48,7 +48,7 @@
         } else {
           var libraries = [src];
         }
-        var script = document.createElement("script")
+        var script = document.createElement("script");
         script.type = "text/javascript";
         // IE
         var ie = false;
@@ -85,16 +85,6 @@
 <div id="container">
   <div id="content">
     <div id="webglCanvasContainer">
-      <ul id="visualizations" class="hlist">
-        <li>
-          <p>Avalanche-JS Model: Rendered using an HTML5 canvas</p>
-          <canvas id="patchesCanvas"></canvas>
-        </li>
-        <li>
-          <p>Average Number of folders on a desk</p>
-          <div id='chart'></div>
-        </li>
-      </ul>
       <ul class="hlist">
         <li>
           <form id="step-model">
@@ -135,8 +125,18 @@
         </li>
         <li id="step-model-warning"></li>
       </ul>
+      <div id="step-count"></div>
+      <ul id="visualizations" class="hlist">
+        <li>
+          <p>Avalanche-JS Model: Rendered using an HTML5 canvas</p>
+          <canvas id="patchesCanvas"></canvas>
+        </li>
+        <li>
+          <p>Average Number of folders on a desk</p>
+          <div id='chart'></div>
+        </li>
+      </ul>
     </div>
-    <pre id="step-count"></pre>
   </div>
 </div>
 <script type="text/javascript">
@@ -151,14 +151,10 @@
       var select_array_type = document.getElementById("select-array-type");
       var select_array_type_choices = select_array_type.getElementsByTagName("option")
 
-      var safari_browser = false;
-      var chrome_browser = navigator.userAgent.toLowerCase().indexOf('chrome') > 0;
-      if (!chrome_browser) {
-        safari_browser = navigator.userAgent.toLowerCase().indexOf('safari') > 0;
-      };
+      var safari = navigator.userAgent.toLowerCase().indexOf('safari') > 0;
 
       if (webgl) {
-        select_array_type.value = safari_browser ? "regular" : "Uint8Array";
+        select_array_type.value = safari ? "regular" : "Uint8Array";
       } else {
         for(var i=2; i < select_array_type_choices.length; i++) {
           select_array_type_choices[i].disabled = true;
@@ -206,10 +202,6 @@
       var graph_data = [2];
       var graph = grapher.graph(graph_data);
 
-      var modelRunRequest;
-
-      var display_method;
-
       function displayStats() {
         average_sample_rate = model.indexOfStep / (sample_time - start_time) * 1000
         step_count.textContent = 'avalanches: ' + model.indexOfStep + 
@@ -218,6 +210,10 @@
           sprintf(", loop compute maximum: %2f", model_loop_time) +
           sprintf(", folders: %2.3f (ave)", model.averageFolders);
       };
+
+      var modelRunRequest;
+
+      var display_method;
 
       function modelController() {
         for(var i = 0; i < this.elements.length; i++)
@@ -246,7 +242,6 @@
           displayStats();
           avalanche2d.displayFolderCanvas(canvas, model);
         };
-        graph.hide_canvas();
         graph.new_data(graph_data);
         step_model_inputs[0].checked = true;
       };
@@ -259,7 +254,6 @@
           displayStats();
           avalanche2d.displayFolderCanvas(canvas, model);
         };
-        graph.hide_canvas();
         graph.new_data(graph_data);
         if (model.indexOfStep >= 5000) displayResetWarning();
         step_model_inputs[0].checked = true;
@@ -272,11 +266,8 @@
           step_model_inputs[2].checked = true;
         }
         start_time = +new Date();
-        if (show_graph.checked) {
-          graph.show_canvas();
-        };
         modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
-      };
+      }
 
       function modelReset() {
         if (modelRunRequest) cancelRequestAnimFrame(modelRunRequest);
@@ -284,8 +275,6 @@
         avalanche2d.displayFolderCanvas(canvas, model);
         step_count.innerHTML = '';
         step_model_warning.innerHTML = null;
-        graph.hide_canvas();
-        graph.clear_canvas();
         graph_data = [2];
         graph.new_data(graph_data);
         step_model_inputs[0].checked = true;
@@ -313,8 +302,7 @@
         model.nextStep();
         graph_data.push(model.averageFolders);
         if (show_visualization.checked) avalanche2d.displayFolderCanvas(canvas, model);
-        // if (show_graph.checked) graph.add_point(model.averageFolders);
-        if (show_graph.checked) graph.add_canvas_point(model.averageFolders);
+        if (show_graph.checked) graph.add_point(model.averageFolders);
         sample_time = +new Date();
         sample_duration = sample_time - last_sample_time;
         if (show_visualization.checked) displayStats();
@@ -339,7 +327,7 @@
           autoreset = true;
         }
       };
-      graph.clear_canvas();
+
     });
   };
 </script>
