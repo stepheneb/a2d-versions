@@ -53,6 +53,7 @@ a.github:hover {
 
 div.model-select {
   display: flex;
+  align-items: center;
 }
 
 select#select-model {
@@ -85,15 +86,32 @@ span.right-arrowhead.disabled, span.left-arrowhead.disabled {
 }
 
 div.model-info {
-}
-
-div.code-links {
-  /* margin-left: auto; */
+  display: flex;
+  align-items: center;
   font-size: 85%;
 }
 
+div.code-links {
+  font-size: 85%;
+  display: flex;
+  align-items: center;
+}
+
+span.hlist-title {
+  margin-right: 0.4em;
+  font-weight: 600;
+  border-radius: 3px;
+  background-color: lightgray;
+  padding: 0.2em 0.5em;
+}
+
+span.hlist-desc {
+  margin-right: 0.2em;
+  font-weight: 600;
+}
+
 div.code-links a {
-  margin-left: 1em;
+  margin:  0em 0.6em 0em 0.1em;
   color: white;
   border-radius: 3px;
   background-color: rgb(71, 192, 27);
