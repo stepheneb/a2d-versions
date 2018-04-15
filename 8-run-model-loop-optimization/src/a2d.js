@@ -202,6 +202,7 @@ function modelController() {
       modelGo();
       break;
     case "reset":
+      running = false;
       modelReset();
       break;
   }
