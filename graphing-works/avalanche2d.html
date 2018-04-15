@@ -131,6 +131,7 @@
       var model, array_selection;
 
       var model_options = { model: { nx: 100, ny: 100, initial_value: 2 }};
+      var autoreset = false;
 
       function arrayTypeChange() {
         if (choose_array_type.elements[0].checked) {
@@ -163,6 +164,19 @@
       var graph_data = [2];
       var graph = grapher.graph(graph_data);
 
+      var display_method;
+
+      var modelReset = function () {
+        if (window.paintInterval) window.clearInterval(paintInterval);
+        model.reset();
+        avalanche2d.displayFolderCanvas(canvas, model);
+        step_count.innerHTML = '';
+        graph_data = [2];
+        graph.new_data(graph_data);
+        step_model.elements[1].checked = true;
+        step_model.elements[4].checked = false;
+      };
+
       function modelGo() {
         if (model.indexOfStep >= 5000) {
           displayResetWarning();
@@ -175,22 +189,23 @@
 
       window.renderModelStep = function() {
         if (model.indexOfStep >= 5000) {
-          displayResetWarning();
+          if (window.paintInterval) window.clearInterval(paintInterval);
+          autoreset = true;
           step_model.elements[1].checked = true;
-        } else {
-          sample_time = new Date();
-          model.nextStep();
-          graph_data.push(model.averageFolders);
-          // graph.indexedData(graph_data, 0);
-          average_sample_time_ms = (average_sample_time_ms * 1.75 + (last_sample_time - one_before_that_sample_time) * 0.25) / 2;
-          one_before_that_sample_time = last_sample_time;
-          last_sample_time = sample_time;
-          if (show_visualization.checked) {
-            avalanche2d.displayFolderCanvas(canvas, model);
-            displayStats();
-          }
-          if (show_graph.checked) graph.add_point(model.averageFolders);
+          return;
         }
+        sample_time = new Date();
+        model.nextStep();
+        graph_data.push(model.averageFolders);
+        // graph.indexedData(graph_data, 0);
+        average_sample_time_ms = (average_sample_time_ms * 1.75 + (last_sample_time - one_before_that_sample_time) * 0.25) / 2;
+        one_before_that_sample_time = last_sample_time;
+        last_sample_time = sample_time;
+        if (show_visualization.checked) {
+          avalanche2d.displayFolderCanvas(canvas, model);
+          displayStats();
+        }
+        if (show_graph.checked) graph.add_point(model.averageFolders);
       };
 
       function displayStats() {
@@ -200,8 +215,6 @@
       };
 
       window.paintInterval;
-
-      var display_method;
 
       function displayResetWarning() {
         step_model_warning.innerHTML = "<fieldset><legend>Note</legend>Reset the model to start again.</fieldset>"
@@ -225,17 +238,13 @@
             this.elements[2].checked = false;
             break;
           case "go":
+            if (autoreset && model.indexOfStep >= 5000) { modelReset(); };
+            this.elements[3].checked = true;
+            this.elements[1].checked = false;
             paintInterval = setInterval("renderModelStep()", 0);
             break;
           case "reset":
-            if (window.paintInterval) window.clearInterval(paintInterval);
-            model.reset();
-            avalanche2d.displayFolderCanvas(canvas, model);
-            step_count.innerHTML = '';
-            this.elements[1].checked = true;
-            this.elements[4].checked = false;
-            graph_data = [2]
-            graph.new_data(graph_data);
+            modelReset();
             break;
         }
       }
@@ -247,10 +256,10 @@
         if (show_graph.checked) {
           graph.new_data(graph_data);
         } else {
-          
+
         };
       }
-      
+
       show_graph.onchange = displayGraph;
 
     });

@@ -1,7 +1,7 @@
-/*global 
-  window, document, navigator, 
+/*global
+  window, document, navigator,
   requestAnimFrame, cancelRequestAnimFrame ,myRequire,
-  avalanche2d, grapher, sprintf 
+  avalanche2d, grapher, sprintf
 */
 
 var webgl = !!window.WebGLRenderingContext;
@@ -14,6 +14,7 @@ var model, array_selection, i;
 var folder_size = 100;
 var max_model_step = folder_size * folder_size / 2;
 var model_options = { model: { nx: folder_size, ny: folder_size, initial_value: 2 }};
+var autoreset = false;
 
 //
 // JavaScript Array Type Initialization
@@ -235,28 +236,33 @@ function modelStep() {
 
 function modelGo() {
   running = true;
-  if (model.indexOfStep >= max_model_step) {
-    displayResetWarning();
-    step_model_inputs[0].checked = true;
+  if (autoreset && model.indexOfStep >= max_model_step) {
+    modelReset();
   } else {
-    start_time = +new Date();
-    if (show_graph.checked) {
-      graph.show_canvas();
+    if (model.indexOfStep >= max_model_step) {
+      step_model_inputs[0].checked = true;
+      displayResetWarning();
+      return;
     }
-    previous_loop_start = +new Date();
-    initial_model_loop_time = model_loop_time;
-    model_loop_goal = model_loop_time * model_loop_bump_factor;
-    animation_loop_timing = aloop_minimum;
-    if (show_visualization.checked || show_graph.checked) {
-      modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
-    } else {
-      while (model.indexOfStep < max_model_step) {
-        model.nextStep();
-        graph_data.push(model.averageFolders);
-      }
-      step_time = +new Date();
-      modelStop();
+  }
+  start_time = +new Date();
+  if (show_graph.checked) {
+    graph.show_canvas();
+  }
+  previous_loop_start = +new Date();
+  initial_model_loop_time = model_loop_time;
+  model_loop_goal = model_loop_time * model_loop_bump_factor;
+  animation_loop_timing = aloop_minimum;
+  if (show_visualization.checked || show_graph.checked) {
+    modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
+  } else {
+    while (model.indexOfStep < max_model_step) {
+      model.nextStep();
+      graph_data.push(model.averageFolders);
     }
+    step_time = +new Date();
+    modelStop();
+    autoreset = true;
   }
 }
 
@@ -299,6 +305,7 @@ function runModelStep() {
     step_time = +new Date();
     step_duration = step_time - last_step_time;
     if (show_visualization.checked) { displayStats(); }
+    autoreset = false;
 }
 
 function runModelStepWithoutVisualization() {
@@ -308,6 +315,7 @@ function runModelStepWithoutVisualization() {
     if (show_graph.checked) { graph.add_canvas_point(model.averageFolders); }
     step_time = +new Date();
     step_duration = step_time - last_step_time;
+    autoreset = false;
 }
 
 function runModelLoop(){
@@ -337,7 +345,8 @@ function runModelLoop(){
     }
     model_loop_goal = model_loop_time * model_loop_bump_factor;
     previous_loop_start = loop_start;
-  } else { 
+  } else {
     modelStop();
+    autoreset = true;
   }
 }
