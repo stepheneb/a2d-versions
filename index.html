@@ -24,19 +24,24 @@
     </div>
     <div id="introduction" class="introduction"></div>
     <div id="models-header" class="header">
-      <span>Select model: </span>
-      <span id="previous-model" class="left-arrowhead">&#x27A4</span>
-      <select id="select-model">
-        <option value="1" selected>graphing-works</option>
-        <option value="2">dynamically-add-line-segments</option>
-        <option value="3">multiple-model-steps-until-15ms</option>
-        <option value="4">requestAnimFrame-faster-than-setInterval</option>
-        <option value="5">use-canvas-for-real-time-graphing</option>
-        <option value="6">dynamically-adjust-model-loop-time</option>
-        <option value="7">only-render-canvas-once-per-animRequest</option>
-        <option value="8">run-model-loop-optimization</option>
-      </select>
-      <span id="next-model" class="right-arrowhead">&#x27A4</span>
+      <div class="model-select">
+        <span>Select model: </span>
+        <span id="previous-model" class="left-arrowhead">&#x27A4</span>
+        <select id="select-model">
+          <option value="1" selected>1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+        </select>
+        <span id="next-model" class="right-arrowhead">&#x27A4</span>
+      </div>
+      <div class="model-info">
+        <span id="model-date"></span>
+      </div>
       <div class="code-links">
         <a id="taggedcode" target="_blank"></a>
         <a id="comparerange" target="_blank"></a>

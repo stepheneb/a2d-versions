@@ -5,6 +5,8 @@ window.onload=function() {
       selectModel   = document.getElementById("select-model"),
       nextModel     = document.getElementById("next-model"),
       previousModel = document.getElementById("previous-model"),
+      modelDate     = document.getElementById("model-date"),
+      modelDesc     = document.getElementById("model-desc"),
       modelFrame    = document.getElementById("model-iframe"),
       introduction  = document.getElementById("introduction"),
       modelsHeader  = document.getElementById("models-header"),
@@ -99,11 +101,13 @@ window.onload=function() {
   // look for code blocks and add syntax highlighting
   Prism.highlightAll();
 
+  modelDate.textContent = content[modelnum].date;
+
   taggedcode.href = taggedtarget + content[modelnum].tag;
-  taggedcode.text = "tag: " + content[modelnum].tag;
+  taggedcode.text = content[modelnum].tag;
 
   comparerange.href = comparetarget + content[modelnum].comparerange;
-  comparerange.text = "compare: " + content[modelnum].comparerange;
+  comparerange.text = content[modelnum].comparerange;
 
 
   // loadModel(Number(selectModel.value));
