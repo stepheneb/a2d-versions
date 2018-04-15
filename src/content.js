@@ -50,7 +50,7 @@ var content = {
   // -------*-------*-------*-------*-------*-------*-------*-------
 
 
-  "6-dynamically-adjust-model-loop-time-c835db1": {
+  "6": {
     tag: 'dynamically-adjust-model-loop-time',
     date: '2011 10 20',
     introduction: '\n\n\n\n',
