@@ -3,7 +3,7 @@
 //     created by Stephen Bannasch
 //     avalanche2d.js may be freely distributed under the LGPL license.
 
-/*global 
+/*global
   window, document, navigator,
   requestAnimFrame, cancelRequestAnimFrame, myRequire,
   avalanche2d, grapher, sprintf,
@@ -44,7 +44,7 @@ avalanche2d.Model = function(canvas, options, array_type) {
 
     this.nx = options.model.nx;
     this.ny = options.model.ny;
-    
+
     this.ARRAY_SIZE = this.nx * this.ny;
 
     this.reset();
@@ -60,7 +60,7 @@ avalanche2d.Model.prototype.reset = function() {
     this.folder = createArray(this.ARRAY_SIZE, this.options.model.initial_value);
 
     this.averageFolders = this.options.model.initial_value;
-    
+
     this.setupCanvas();
 
     this.folderSolver = new avalanche2d.FolderSolver2D(this);
@@ -193,7 +193,7 @@ avalanche2d.FolderSolver2D = function(model) {
 
     this.nx = model.nx;
     this.ny = model.ny;
-    
+
     this.cells_to_process = [];
     this.new_cells_to_process = [];
 
@@ -234,7 +234,7 @@ avalanche2d.FolderSolver2D.prototype.distributeFolders = function(xpos, ypos, in
         nx_minus_one = nx - 1,
         index_plus_x, index_minus_x, index_plus_y, index_minus_y,
         caused_avalanche = false;
-    
+
     // if we're not on the left edge increment the neighbor to the left
     if (xpos > 0) {
         index_minus_x = index - 1;
@@ -244,7 +244,7 @@ avalanche2d.FolderSolver2D.prototype.distributeFolders = function(xpos, ypos, in
             caused_avalanche = true;
         }
     }
-    
+
     // if we're not on the right edge increment the neighbor to the right
     if (xpos < nx_minus_one) {
         index_plus_x  = index + 1;
@@ -254,7 +254,7 @@ avalanche2d.FolderSolver2D.prototype.distributeFolders = function(xpos, ypos, in
             caused_avalanche = true;
         }
     }
-    
+
     // if there is a row above increment the neighbor above
     if (index >= nx)  {
         index_minus_y = index - nx;
@@ -287,7 +287,7 @@ avalanche2d.FolderSolver2D.prototype.distributeFoldersRandomOrder = function(xpo
         caused_avalanche = false,
         cell, cindex,
         index_plus_y = index + nx;
-    
+
     // if we're not on the left edge queue the neighbor to the left
     if (xpos > 0) { neighbors.push([xpos-1, ypos, index-1]); }
 
@@ -348,7 +348,7 @@ avalanche2d.FolderSolver2D.prototype.finish_with_brute_force = function() {
 
     this.cells_to_process = [];
     this.new_cells_to_process = [];
-    
+
     while (avalanche) {
         avalanche = false;
         for (ypos = 0; ypos < ny; ypos++) {
@@ -376,7 +376,7 @@ avalanche2d.FolderSolver2D.prototype.finish_with_brute_force = function() {
 Array.prototype.shuffle = function() {
     var i, r, temp,
         s = this, 
-        len = s.length; 
+        len = s.length;
     for(i = len-1; i > 0; i--) {
         r = Math.floor(Math.random()*(i+1));
         temp = s[i];
@@ -523,10 +523,10 @@ function getAverage (array) {
 *
 * H runs from 0 to 360 degrees
 * S and V run from 0 to 100
-* 
+*
 * Ported from the excellent java algorithm by Eugene Vishnevsky at:
 * http://www.cs.rit.edu/~ncs/color/t_convert.html
-* 
+*
 * http://snipplr.com/view.php?codeview&id=14590
 *
 */
