@@ -15,8 +15,8 @@ window.onload=function() {
       taggedtarget  = "https://github.com/stepheneb/avalanche2d-js/tree/",
       modelnum;
 
+  //showdown converts markdown to html
   showdown.setFlavor('github');
-
   showdown.extension('targetlink', function() {
     return [{
       type: 'html',
@@ -25,7 +25,6 @@ window.onload=function() {
       }
     }];
   });
-
   var converter = new showdown.Converter({ simpleLineBreaks: false, extensions: ['targetlink'] });
 
   function loadModel(num) {
@@ -45,20 +44,15 @@ window.onload=function() {
   selectModel.onchange = selectModelChange;
 
   nextModel.onclick = function() {
-    var modelnum = Number(selectModel.value) + 1;
-    if (modelnum > selectModel.length) {
-      modelnum = 1;
-    }
-    selectModel.value = modelnum;
+    var num = Number(selectModel.value) + 1;
+    selectModel.value = num;
     selectModelChange();
   };
 
   previousModel.onclick = function() {
-    var modelnum = Number(selectModel.value) - 1;
-    if (modelnum < 1) {
-      modelnum = selectModel.length;
-    }
-    selectModel.value = modelnum;
+    var num = Number(selectModel.value) - 1;
+    if (num < 1) { return; }
+    selectModel.value = num;
     selectModelChange();
   };
 
@@ -76,18 +70,6 @@ window.onload=function() {
     description.style.width = width;
   };
 
-  introduction.innerHTML = converter.makeHtml(content[selectModel.value].introduction);
-  description.innerHTML = converter.makeHtml(content[selectModel.value].description);
-
-  // look for code blocks and add syntax highlighting
-  Prism.highlightAll();
-
-  taggedcode.href = taggedtarget + content[selectModel.value].tag;
-  taggedcode.text = "tag: " + content[selectModel.value].tag;
-
-  comparerange.href = comparetarget + content[selectModel.value].comparerange;
-  comparerange.text = "compare: " + content[selectModel.value].comparerange;
-
   if (params.has('model')) {
     modelnum = Number(params.get('model'));
     if (modelnum > 0 && modelnum <= selectModel.length) {
@@ -98,6 +80,31 @@ window.onload=function() {
     }
   }
   loadModel(modelnum);
+
+  if (modelnum == selectModel.length) {
+    nextModel.classList.add('disabled');
+  } else {
+    nextModel.classList.remove('disabled');
+  }
+
+  if (modelnum == 1) {
+    previousModel.classList.add('disabled');
+  } else {
+    previousModel.classList.remove('disabled');
+  }
+
+  introduction.innerHTML = converter.makeHtml(content[modelnum].introduction);
+  description.innerHTML = converter.makeHtml(content[modelnum].description);
+
+  // look for code blocks and add syntax highlighting
+  Prism.highlightAll();
+
+  taggedcode.href = taggedtarget + content[modelnum].tag;
+  taggedcode.text = "tag: " + content[modelnum].tag;
+
+  comparerange.href = comparetarget + content[modelnum].comparerange;
+  comparerange.text = "compare: " + content[modelnum].comparerange;
+
 
   // loadModel(Number(selectModel.value));
 
