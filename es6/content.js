@@ -4,7 +4,7 @@ var content = {
 tag: 'graphing-works',
 date: '2011 10 13',
 introduction: `
-Modeling [Self-Organised Criticality](http://en.wikipedia.org/wiki/Self-organized_criticality)
+### Modeling [Self-Organised Criticality](http://en.wikipedia.org/wiki/Self-organized_criticality)
 
 On the left is a model of 100 by 100 desks with a bureaucrat sitting at every one. As the model
 starts each desk already has two folders of work the bureaucrat is ignoring -- this is displayed
@@ -19,7 +19,7 @@ connected to the model. Over the next month and 149 more commits I increased the
 combined performance of the model, visualization, and graph by a factor of aproximately 50.
 You can run the model at eight different points through this process.
 
-See the lower section for my commentary about the code and the changes.
+Commentary about the code below the model.
 
 Click the Go button to start the model running. The model will stop automatically when
 it reaches 5000 steps. Note the rate of avalanches/s displayed under the model. Then try

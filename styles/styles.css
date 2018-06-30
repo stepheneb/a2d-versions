@@ -162,10 +162,12 @@ div.description a {
 
 div.introduction p {
   margin-bottom: 0.5em;
+  padding-right: 2em;
 }
 
 div.description p {
   margin-bottom: 0.5em;
+  padding-right: 2em;
 }
 
 div.description blockquote {
@@ -176,11 +178,11 @@ div.description blockquote {
 pre.language-javascript {
   margin-top: 0.75em;
   width: 90%;
+  line-height: 1.2;
 }
 
 code.javascript.language-javascript {
   font-size: 85%;
-  line-height: 14px;
 }
 
 h1 {
@@ -188,12 +190,12 @@ h1 {
   font-size: 1.5rem;
 }
 
-h3 {
+h2 {
   margin: 0.5em 0em;
   font-size: 1.35rem;
 }
 
 h3 {
   margin: 0.5em 0em;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
 }

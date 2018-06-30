@@ -8,7 +8,7 @@ steps per second, a 42x performance increase.
 
 ### Developing
 
-Install node.
+Install node and npm.
 
 Install Babel and the ES6 template-literals plugin.
 
