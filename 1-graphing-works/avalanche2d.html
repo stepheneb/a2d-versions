@@ -210,7 +210,7 @@
 
       function displayStats() {
         step_count.innerHTML = 'avalanches: ' + model.indexOfStep +
-          sprintf(", rate: %3.1f (avalanches/s)", 1/average_sample_time_ms * 1000) +
+          sprintf(", rate: %3.1f (steps/s)", 1/average_sample_time_ms * 1000) +
           sprintf(", folders: %1.2f (ave)", model.averageFolders);
       };
 
