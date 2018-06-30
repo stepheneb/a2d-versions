@@ -18,6 +18,10 @@ Now you can use Babel to compile ES6 JavaScript code in the es6 directory and ge
 
 ```$ npx babel es6 --watch -d src```
 
+The content/cpode in `src/content.js` is generated automaticaly by processing the file
+`es6/content.js`. The content in the file `es6/content.js` is written using ES6 template
+literals and is much eaasier to edit.
+
 Start a simple Ruby web server on port 9090.
 
 ```$ ruby -run -e httpd . -p 9090```

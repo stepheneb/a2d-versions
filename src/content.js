@@ -61,7 +61,7 @@ var content = {
     date: '2011 10 21',
     introduction: '\n\nUp until now I had been running the JavaScript to render the canvas visualization\nafter the completion of each model step. Of course rendering into the canvas object\ndoesn\'t make it visible to the viewer -- the canvas becomes visible only after the\nbrowser completes a scheduled repaint -- so if I can run five model steps before a\nrepaint is scheduled -- four of the canvas rendering operations are completely\nwasted effort. The result is more than a 4x speedup!\n\n',
     comparerange: 'c835db1...0ced7a3',
-    description: '\n\n### Code Comments\n\n\n' },
+    description: '\n\n### Code Comments\n\nOne of the interesting effects of this speedup is the non-linearity. Browsers with\nfaster JavaScript engines are sped up much more than browsers with slower JavaScript\nengines because so many more unnecessary renderings of the canvas visualization can\navoided.\n\n' },
 
   // -------8-------8-------8-------8-------8-------8-------8-------
 

@@ -400,6 +400,10 @@ description: `
 
 ### Code Comments
 
+One of the interesting effects of this speedup is the non-linearity. Browsers with
+faster JavaScript engines are sped up much more than browsers with slower JavaScript
+engines because so many more unnecessary renderings of the canvas visualization can
+avoided.
 
 `},
 
