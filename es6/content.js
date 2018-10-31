@@ -520,6 +520,8 @@ description: `
 
 ### Code Comments
 
+If you change the desk array size to 400x400 and run the model play attaention to the graph. I see moments in time when it pauses. I'm obvuously still creating objects which need to be garbage collected. I suspect I could make this still faster by minimizing this.
+
 Am now using a faster method to clear the graph canvas and very simple optimizations to the model loop.
 
 [clear_canvas()](https://github.com/stepheneb/avalanche2d-js/blob/run-model-loop-optimization/src/grapher.js#L244)
