@@ -14,7 +14,7 @@ they are at the edge the folders are just thrown away. A blue cell is zero, gree
 three folders.
 
 I started this project on Oct 12, 2011. The model below is from a day later on Oct 13.
-This is when I got the real-time grapher I had written previous in a previous project
+This is when I got the real-time grapher I had written in a previous project
 connected to the model. Over the next month and 149 more commits I increased the
 combined performance of the model, visualization, and graph by a factor of aproximately 50.
 You can run the model at eight different points through this process.
