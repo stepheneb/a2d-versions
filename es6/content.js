@@ -54,9 +54,9 @@ hooked together and working. At this stage the real-time grapher is using SVG an
 
 The code uses [typed arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays)
 if they are available to hold the model state and color lookup tables to speed up processing.
-In the main computational processing loops object variables are copied to local variables.
+In the main computational processing loop object variables are copied to local variables.
 
-[avalanche2d.FolderSolver2D.prototype.distributeFoldersRandomOrder](https://github.com/stepheneb/avalanche2d-js/blob/ee82f32900b1037fcd43f9f8227a915946605d88/src/avalanche2d.js#L292)
+[avalanche2d.FolderSolver2D.prototype.distributeFoldersRandomOrder()](https://github.com/stepheneb/avalanche2d-js/blob/ee82f32900b1037fcd43f9f8227a915946605d88/src/avalanche2d.js#L292)
 
 \`\`\`javascript
 avalanche2d.FolderSolver2D.prototype.distributeFoldersRandomOrder = function(xpos, ypos, index) {
@@ -175,7 +175,7 @@ Modeling [Self-Organised Criticality](http://en.wikipedia.org/wiki/Self-organize
 
 I knew the code in the real-time grapher generating SVG segments which I had built
 using the [D3.js](https://d3js.org/) framework could be a performance bottleneck
-so I tried to optimize the code adding line segments to the SVG pathSegList object.
+so I tried to optimize the code by manually adding line segments to the SVG pathSegList object.
 
 This version of the code is just a bit faster that the previous version.
 
@@ -185,10 +185,10 @@ description: `
 
 ### Code Comments
 
-An experiment to see if adding SVG line segments would be faster if I add them to the SVG pathSegList
+An experiment to see if adding SVG line segments would be faster if I add them to the SVG \`\`\`pathSegList\`\`\`
 directly instead of using [D3.js](https://d3js.org/). It's only a bit faster.
 
-[grapher.generate_path_attribute and grapher.add_point](https://github.com/stepheneb/avalanche2d-js/blob/d467b876455e9c4d3285ce6f2a1bbfe4c948ad0c/src/grapher.js#L91)
+[grapher.generate_path_attribute() and grapher.add_point()](https://github.com/stepheneb/avalanche2d-js/blob/d467b876455e9c4d3285ce6f2a1bbfe4c948ad0c/src/grapher.js#L91)
 
 
 \`\`\`javascript
@@ -257,7 +257,7 @@ The model starts out running alomost 3x faster but slows down to only 2x as the 
 2500 steps. The slowdown appears to partly be caused by a slowdown adding SVG line segments
 when the number of line segments gets large. There is also an inherent slowdown after the
 bureaucrats desks become mostly filled with folders. A new folder is much more likely to cause
-an avalanche and avalanches tend to be bigger which comsume more processor cycles.
+an avalanche and avalanches tend to be larger which consumes more processor cycles.
 
 This version runs the compute and render steps of the model multiple times until 15ms has passed.
 
@@ -267,15 +267,15 @@ description: `
 
 ### Code Comments
 
-The model is still running in a setInterval callback but previously I was only running the
-compute and render steps once per callback.
+The model is still running in a \`\`\`window.setInterval\`\`\` callback the difference is that previously I was only running the
+model compute and render steps once per callback.
 
 Now I am running these steps multiple times in a loop until the elapsed time is more than 15ms
 before returning. Occasionally model compute steps will take much longer than normal when
 a large number of folders have accumulated and the next step causes a large bureaucrat folder
 avalanche.
 
-[window.runModelStep](https://github.com/stepheneb/avalanche2d-js/blob/bcd5469aef1b5cd5f9ce39d50e17ed2cc691376a/avalanche2d.html#L233)
+[window.runModelStep()](https://github.com/stepheneb/avalanche2d-js/blob/bcd5469aef1b5cd5f9ce39d50e17ed2cc691376a/avalanche2d.html#L233)
 
 \`\`\`javascript
 window.runModelStep = function() {
@@ -327,7 +327,6 @@ description: `
 Interesting that Safari is a bit slower using a UInt8Array typed array. FireFox and
 Chrome are about the same speed.
 
-
 `},
 
 
@@ -339,11 +338,11 @@ tag: 'use-canvas-for-real-time-graphing',
 date: '2011 10 19',
 introduction: `
 
-Rendering into a [Canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element
+Rendering the real-time plotting into a [Canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element
 instead of using [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG) provides a 5x speedup!
 
 When the model stops the Canvas is cleared and hidden and an SVG graph is drawn so
-the grapher pan and axis drag UI will work.
+the grapher pan and axis drag UI will work properly.
 
 `,
 comparerange: '20a640b...b470432',
@@ -351,9 +350,28 @@ description: `
 
 ### Code Comments
 
+Here's the new code that draws lines in the graph. The browsers canvas implementation has no need to build up a list of path segments and is faster than the equivalent in SVG.
+
+[add_canvas_point()](https://github.com/stepheneb/avalanche2d-js/blob/use-canvas-for-real-time-graphing/src/grapher.js#L150)
+\`\`\`javascript
+function add_canvas_point(p) {
+  var len = points.length;
+  var oldx = x.call(self, len-1, len-1);
+  var oldy = y.call(self, points[len-1].y, len-1);
+  var point = { x: len, y: p };
+  points.push(point);
+  var newx = x.call(self, len, len);
+  var newy = y.call(self, p, len);
+  gctx.beginPath();
+  gctx.moveTo(oldx, oldy);
+  gctx.lineTo(newx, newy);
+  gctx.closePath();
+  gctx.stroke();
+  // FIXME: FireFox bug
+};
+\`\`\`
 
 `},
-
 
 
 // -------6-------6-------6-------6-------6-------6-------6-------
@@ -367,13 +385,47 @@ After each computational model step is complete the program needs to estimate if
 there is enough time before the next scheduled repaint to run the subsequent model
 step. This can\'t be a definite calculation because we don\'t know how many
 avalanches will occur. I\'m dynamically adjusting my estimate of model step time
-based on long previous steps took.
+based on how long previous steps took.
 
 `,
 comparerange: 'b470432...c835db1',
 description: `
 
 ### Code Comments
+
+My dynamic estimation of how long running the next model step might take to complete is quite primitive.
+
+[runModelLoop()](https://github.com/stepheneb/avalanche2d-js/blob/dynamically-adjust-model-loop-time/avalanche2d.html#L406)
+\`\`\`javascript
+function runModelLoop(){
+  if (model.indexOfStep < 5000 && running) {
+    loop_start = +new Date();
+    animmation_loop_timing = loop_start - previous_loop_start;
+    modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
+    runModelStep();
+    loop_time = +new Date()
+    loop_elapsed = loop_time - loop_start;
+    while (loop_elapsed < model_loop_time) {
+      runModelStep();
+      loop_time = +new Date()
+      loop_elapsed = loop_time - loop_start;
+      if (model.indexOfStep >= 5000) {
+        running = false;
+        break;
+      };
+    };
+    if (animmation_loop_timing > (model_loop_time+model_loop_bump)) {
+      model_loop_time++;
+    } else {
+      model_loop_time--;
+    };
+    model_loop_bump = model_loop_time / 5;
+    previous_loop_start = loop_start;
+  } else {
+    modelStop()
+  }
+};
+\`\`\`
 
 
 `},
@@ -387,12 +439,8 @@ tag: 'only-render-canvas-once-per-animRequest',
 date: '2011 10 21',
 introduction: `
 
-Up until now I had been running the JavaScript to render the canvas visualization
-after the completion of each model step. Of course rendering into the canvas object
-doesn\'t make it visible to the viewer -- the canvas becomes visible only after the
-browser completes a scheduled repaint -- so if I can run five model steps before a
-repaint is scheduled -- four of the canvas rendering operations are completely
-wasted effort. The result is more than a 4x speedup!
+Up until now I had been running the JavaScript code to render the canvas visualization and plot in the graph
+after the completion of each model step. Of course rendering into the canvas object doesn\'t make it visible to the viewer -- the canvas becomes visible only after the browser completes a scheduled repaint -- so if I can run five model steps before a repaint is scheduled -- four of the canvas rendering operations are completely wasted effort. The result is more than a 4x speedup!
 
 `,
 comparerange: 'c835db1...0ced7a3',
@@ -404,6 +452,45 @@ One of the interesting effects of this speedup is the non-linearity. Browsers wi
 faster JavaScript engines are sped up much more than browsers with slower JavaScript
 engines because so many more unnecessary renderings of the canvas visualization can
 avoided.
+
+[runModelLoop()](https://github.com/stepheneb/avalanche2d-js/blob/only-render-canvas-once-per-animRequest/avalanche2d.html#L437)
+
+\`\`\`javascript
+function runModelLoop(){
+  if (model.indexOfStep < 5000 && running) {
+    loop_start = +new Date();
+    animmation_loop_timing = loop_start - previous_loop_start;
+    multiple_steps = false;
+    modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
+    step_duration_max = 0;
+    runModelStep();
+    if (step_duration > step_duration_max) step_duration_max = step_duration;
+    loop_time = +new Date();
+    loop_elapsed = loop_time - loop_start;
+    while (loop_elapsed < model_loop_time) {
+      multiple_steps = true;
+      runModelStepWithoutVisualization();
+      if (step_duration > step_duration_max) step_duration_max = step_duration;
+      loop_time = +new Date()
+      loop_elapsed = loop_time - loop_start;
+      if (model.indexOfStep >= 5000) {
+        running = false;
+        break;
+      };
+    };
+    if (animmation_loop_timing > model_loop_goal && loop_elapsed < model_loop_goal) {
+      model_loop_time++;
+    } else {
+      if (model_loop_goal > aloop_minimum) model_loop_time--;
+    };
+    model_loop_goal = model_loop_time * model_loop_bump_factor;
+    previous_loop_start = loop_start;
+  } else {
+    modelStop()
+  }
+};
+\`\`\`
+
 
 `},
 
@@ -433,5 +520,50 @@ description: `
 
 ### Code Comments
 
+Am now using a faster method to clear the graph canvas and very simple optimizations to the model loop.
+
+[clear_canvas()](https://github.com/stepheneb/avalanche2d-js/blob/run-model-loop-optimization/src/grapher.js#L244)
+\`\`\`javascript
+function clear_canvas() {
+  gcanvas.width = gcanvas.width;
+  gctx.fillStyle = "rgba(0,255,0, 0.05)";
+  gctx.fillRect(0, 0, gcanvas.width, gcanvas.height);
+}
+\`\`\`
+
+[runModelLoop()](https://github.com/stepheneb/avalanche2d-js/blob/run-model-loop-optimization/src/a2d.js#L329)
+\`\`\`javascript
+function runModelLoop(){
+  if (model.indexOfStep < max_model_step && running) {
+    loop_start = +new Date();
+    animation_loop_timing = loop_start - previous_loop_start;
+    modelRunRequest = requestAnimFrame(runModelLoop, visualizations);
+    step_duration_max = 0;
+    runModelStep();
+    if (step_duration > step_duration_max) { step_duration_max = step_duration; }
+    loop_time = +new Date();
+    loop_elapsed = loop_time - loop_start;
+    while (loop_elapsed < model_loop_time) {
+      runModelStepWithoutVisualization();
+      if (step_duration > step_duration_max) { step_duration_max = step_duration; }
+      loop_time = +new Date();
+      loop_elapsed = loop_time - loop_start;
+      if (model.indexOfStep >= max_model_step) {
+        running = false;
+        break;
+      }
+    }
+    if (animation_loop_timing > model_loop_goal && loop_elapsed < model_loop_goal) {
+      model_loop_time++;
+    } else {
+      if (model_loop_goal > aloop_minimum) { model_loop_time--; }
+    }
+    model_loop_goal = model_loop_time * model_loop_bump_factor;
+    previous_loop_start = loop_start;
+  } else { 
+    modelStop();
+  }
+}
+\`\`\`
 
 `}};
