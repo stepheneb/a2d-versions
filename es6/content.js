@@ -253,7 +253,7 @@ introduction: `
 
 This version runs the compute and render steps of the model multiple times until 15ms has passed.
 
-The model starts out running alomost 3x faster but slows down to only 2x as the model passes
+The model starts out running almost 3x faster but slows down to only 2x as the model passes
 2500 steps. The slowdown appears to partly be caused by a slowdown adding SVG line segments
 when the number of line segments gets large. There is also an inherent slowdown after the
 bureaucrats desks become mostly filled with folders. A new folder is much more likely to cause
@@ -301,7 +301,6 @@ window.runModelStep = function() {
 `},
 
 
-
 // -------4-------4-------4-------4-------4-------4-------4-------
 
 "4": {
@@ -338,11 +337,9 @@ tag: 'use-canvas-for-real-time-graphing',
 date: '2011 10 19',
 introduction: `
 
-Rendering the real-time plotting into a [Canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element
-instead of using [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG) provides a 5x speedup!
+Rendering the real-time plotting into a [Canvas](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas) element instead of using [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG) provides a 5x speedup!
 
-When the model stops the Canvas is cleared and hidden and an SVG graph is drawn so
-the grapher pan and axis drag UI will work properly.
+When the model stops the Canvas is cleared and hidden and an SVG graph is drawn so the grapher pan and axis drag UI will work properly.
 
 `,
 comparerange: '20a640b...b470432',
@@ -520,7 +517,7 @@ description: `
 
 ### Code Comments
 
-If you change the desk array size to 400x400 and run the model play attaention to the graph. I see moments in time when it pauses. I'm obvuously still creating objects which need to be garbage collected. I suspect I could make this still faster by minimizing this.
+If you change the desk array size to 400x400 and run the model pay attention to the graph. I see moments in time when it pauses. I'm obviously still creating objects which need to be garbage collected. I suspect I could make this still faster by minimizing this.
 
 Am now using a faster method to clear the graph canvas and very simple optimizations to the model loop.
 
